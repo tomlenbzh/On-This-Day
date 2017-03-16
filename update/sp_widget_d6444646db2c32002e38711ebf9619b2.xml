@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope, $rootScope, $timeout, $http, spUtil) {
+	/* widget controller */
+	var c = this;
+	$('.input-group.date').datepicker({
+		format: "yyyy-mm-dd",
+		autoclose: true
+	});
+
+	$rootScope.$broadcast('showSpinner', false);
+
+	$scope.create = function() {
+		$rootScope.$broadcast('showSpinner', true);
+		console.log('>>>DEBUG: newpage date=' + $scope.date);
+		$http({
+			method : "POST",
+			url : "/api/sn_otd/new_page/" + $scope.date,
+			headers : "Content-type: application/json",
+			data : {}
+		}).then(function success(response) {
+			console.log('writeRecord(): success');
+			spUtil.addInfoMessage($scope.data.message.saved);
+			console.log(JSON.stringify(response));
+			$rootScope.$broadcast('showSpinner', false);
+			$scope.data.sys_id = response.data.result.sys_id;
+		}, function failure(response) {
+			spUtil.addErrorMessage('Things did not go well');
+			$rootScope.$broadcast('showSpinner', false);
+		});
+		
+		console.log('date=' + $scope.date);
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.myDefault {
+  color : #428bca;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>otd_new_page</id>
+        <internal>false</internal>
+        <link/>
+        <name>OTD New Page</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	data.sys_id = '';
+	data.message = {
+		"saved" : gs.getMessage('Saved')
+	};
+
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-01-27 17:19:54</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>d6444646db2c32002e38711ebf9619b2</sys_id>
+        <sys_mod_count>79</sys_mod_count>
+        <sys_name>OTD New Page</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sp_widget_d6444646db2c32002e38711ebf9619b2</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-03-14 18:01:04</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default">
+  <div class="panel-heading">
+    <a class="myDefault" href="?id=otd_pages">
+      <span class="glyphicon glyphicon-home"></span>
+    </a>
+    <span>&nbsp;Choose a date</span>
+  </div>
+  <div class="input-group date">
+    <input type="hidden" name="input_text" />
+    <input type="text" class="form-control" ng-model="date" ng-change="create()" >
+    <span class="input-group-addon">
+      <i class="glyphicon glyphicon-th"></i>
+    </span>
+  </div>
+
+  <div ng-if="data.sys_id != ''">
+    <a href="?id=otd_count&otd_page={{data.sys_id}}">
+      <button type="button" class="btn btn-info btn-block">
+        <span class="glyphicon glyphicon-pencil"></span>
+      </button>
+    </a>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

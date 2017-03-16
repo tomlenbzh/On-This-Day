@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>sn_otd.Parser2</api_name>
+        <client_callable>false</client_callable>
+        <description>Updated parser that uses MediaWiki REST API to retrieve information w/less RegEx use.</description>
+        <name>Parser2</name>
+        <script><![CDATA[var Parser2 = Class.create();
+Parser2.prototype = {
+    initialize: function(pageRec) {
+		this.eventTable    = 'sn_otd_event';
+		this.personTable   = 'sn_otd_person';
+		this.pageID        = pageRec.sys_id;
+		this.pageDate      = pageRec.date;
+		this.typeList      = ['events', 'births', 'deaths'];
+		this.baseEndpoint  = 'https://en.wikipedia.org/api/rest_v1/feed/onthisday';
+    },
+	
+	padDigits : function (number, digits) {
+		return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+	},
+	
+	makeWikipediaURL : function(type) {
+		
+		gs.debug('>>>DEBUG: getWikipediaURL() start');
+
+		gs.debug('>>>DEBUG: d=' + this.pageDate);
+		var today = new GlideDate();
+		today.setValue(this.pageDate);
+		var thisMonth = this.padDigits(today.getMonthNoTZ(), 2);
+		var thisDay = this.padDigits(today.getDayOfMonthNoTZ(), 2);
+		
+		var url = this.baseEndpoint + '/' + type + '/' + thisMonth + '/' + thisDay;	
+		gs.debug('>>>DEBUG: url=' + url);
+		
+		return url;
+	},
+
+	getRemoteData : function(type) {
+		
+		var url = this.makeWikipediaURL(type);
+		
+		var rm = new sn_ws.RESTMessageV2();
+		rm.setEndpoint(url);
+		rm.setHttpMethod('GET');
+		var resp = rm.execute();
+		
+		var statusCode = resp.getStatusCode();
+		gs.info('HTTP Response Code: ' + statusCode);
+		var bodyText = resp.getBody();
+		var bodyObj = JSON.parse(bodyText);
+		
+		return bodyObj;
+	},
+	
+	parseObjData : function(obj, type) {
+		
+		var list = obj[type];
+		
+		for (var i = 0; i < list.length; i++) {
+			var line = list[i];
+			var event = {};
+			
+			event.type = type;
+			event.year = list[i].year;
+			
+			switch (event.type) {
+				case 'events':
+					event.text = line.text;
+					event.sys_class_name = this.eventTable;
+					break;
+				case 'births':
+				case 'deaths':
+					event.sys_class_name = this.personTable;
+					var details = line.pages[0];
+					event.text = details.normalizedtitle;
+					event.name = details.normalizedtitle;
+					event.title = details.description;
+					var secondDate = this._setBornOrDiedYear(line.text);
+					if (type == 'births') {
+						event.born = event.year;
+						event.died = secondDate.year;
+					}
+					if (type == 'deaths') {
+						event.born = secondDate.year;
+						event.died = event.year;
+					}
+					break;
+			}
+
+			event.page = this.pageID;
+			
+			var filter = new Filter(event.type);
+
+			event.review = filter.activeType();
+			if (event.review) {
+				event.review = !filter.filterMatch(line.text);
+			}
+			gs.debug('parseObjData(): type=' + event.type + ' line.text=' + line.text);
+			this._createRecord(event);
+		}
+	},
+
+	getAllData : function() {
+		for (var i = 0; i < this.typeList.length; i++) {
+			var type = this.typeList[i];
+			var obj = this.getRemoteData(type);
+			this.parseObjData(obj, type);
+		}
+	},
+	
+	_setBornOrDiedYear : function(text) {
+		
+		var answer = {};
+		
+		// If there is a birth/death year, save it and update the text
+		var yearReg = /(.*)\s\([bd]\.\s(\d+)\)/;
+		var yearPart = text.match(yearReg);
+
+		if (yearPart) {
+ 			 gs.debug('_setBornOrDiedYear(): yearPart[1]=' +
+ 					 yearPart[1] + ' yearPart[2]=' + yearPart[2]);
+			answer.text = yearPart[1];
+			answer.year = parseInt(yearPart[2], 10);
+			gs.debug('_setBornOrDiedYear(): year=' + answer.year +
+					' text=' + answer.text);
+		} else {
+			answer.text = text;
+			answer.year = '';
+		}
+		
+		return answer;
+		
+	},
+	
+	_createRecord : function(evt) {
+		
+		var rec = new GlideRecord(evt.sys_class_name);
+		rec.newRecord();
+		
+		for (var field in evt) {
+			gs.debug('_createRecord: ' + field + '=' + evt[field]);
+			if (field == 'sys_class_name')
+				continue;
+			rec.setValue(field, evt[field]);
+		}
+		rec.insert();
+		
+	},
+	
+	deleteRelatedEvents : function() {
+		
+		var event = new GlideRecord(this.eventTable);
+		event.addQuery('page', this.pageID);
+		event.deleteMultiple();
+	},
+
+
+    type: 'Parser2'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>chuck.tomasi</sys_created_by>
+        <sys_created_on>2017-03-13 21:27:57</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>314ae6e813e13200ae44b4622244b0ce</sys_id>
+        <sys_mod_count>31</sys_mod_count>
+        <sys_name>Parser2</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_script_include_314ae6e813e13200ae44b4622244b0ce</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-03-14 16:53:20</sys_updated_on>
+    </sys_script_include>
+</record_update>

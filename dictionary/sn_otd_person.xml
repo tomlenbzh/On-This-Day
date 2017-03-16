@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element extends="sn_otd_event" label="Person" max_length="40" name="sn_otd_person" type="collection">
+        <element label="Born" max_length="40" name="born" type="integer"/>
+        <element label="Died" max_length="40" name="died" type="integer"/>
+        <element label="Name" max_length="40" name="name" type="string"/>
+        <element attributes="no_truncate=true" label="Title" max_length="1000" name="title" type="string"/>
+    </element>
+</database>

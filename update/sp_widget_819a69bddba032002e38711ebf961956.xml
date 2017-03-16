@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope) {
+  /* widget controller */
+  var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.table-fixed thead {
+  width: 97%;
+}
+.table-fixed tbody {
+  height: 500px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+.table-fixed tbody td, .table-fixed thead &gt; tr&gt; th {
+  float: left;
+  border-bottom-width: 0;
+}
+
+.myDefault {
+  color : #428bca;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>otd_page_list</id>
+        <internal>false</internal>
+        <link/>
+        <name>OTD Page List</name>
+        <option_schema>[{"displayValue":"Page","name":"sp_page","label":"Page to link to","type":"reference","value":"sp_page","ed":{"reference":"sp_page"}}]</option_schema>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	
+	data.page_list = [];
+	var gr = new GlideRecord('sn_otd_page');
+	gr.orderByDesc('date');
+	gr.query();
+	
+	while (gr.next()) {
+		var page = {};
+		page.sys_id = gr.getValue('sys_id');
+		page.display_value = gr.getDisplayValue();
+		page.state = gr.state.getDisplayValue();
+		data.page_list.push(page);
+	}
+	gs.debug('len=' + data.page_list);
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-01-26 20:49:06</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>819a69bddba032002e38711ebf961956</sys_id>
+        <sys_mod_count>43</sys_mod_count>
+        <sys_name>OTD Page List</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sp_widget_819a69bddba032002e38711ebf961956</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-02-20 13:58:42</sys_updated_on>
+        <template><![CDATA[
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4>
+      On This Day In History
+      <a ng-href="?id=otd_new_page" class="pull-right myDefault">
+        <span class="glyphicon glyphicon-plus">
+        </span></a>
+    </h4>
+  </div>
+  <table class="table table-fixed">
+    <thead>
+      <tr>
+        <th class="col-xs-4">Date</th>
+        <th class="col-xs-8">State</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="page in c.data.page_list">
+        <td class="col-xs-4"><a class="myDefault" ng-href="?id=otd_count&otd_page={{page.sys_id}}">{{page.display_value}}</a></td>
+        <td class="col-xs-8">{{page.state}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

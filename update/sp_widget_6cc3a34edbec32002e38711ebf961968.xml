@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.myDefault {
+  color : #428bca;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>otd_title</id>
+        <internal>false</internal>
+        <link/>
+        <name>OTD Title</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	var pageID = $sp.getParameter('otd_page');
+	var page = new GlideRecord('sn_otd_page');
+	page.get(pageID);
+	data.title = page.getDisplayValue();
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-01-28 00:17:01</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>6cc3a34edbec32002e38711ebf961968</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>OTD Title</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sp_widget_6cc3a34edbec32002e38711ebf961968</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-02-20 14:03:25</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default">
+  <div class="panel-heading">
+    <a href="?id=otd_pages">
+      <span class="myDefault glyphicon glyphicon-home"></span>
+    </a>
+    <span class=" pull-right">{{data.title}}</span>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

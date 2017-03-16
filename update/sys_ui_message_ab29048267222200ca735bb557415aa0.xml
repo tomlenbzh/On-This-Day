@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_message">
+    <sys_ui_message action="INSERT_OR_UPDATE">
+        <application/>
+        <key>sn_otd_output_pattern_info</key>
+        <language>en</language>
+        <message>The objects and properties available to the output patterns is described below with sample data. For example:&#13;
+&lt;li&gt;&lt;b&gt;&amp;#0036;&amp;#0123event.date.fullText&amp;#0125;&lt;/b&gt; is replaced with &lt;b&gt;October 18, 32 BC&lt;/b&gt;&lt;/li&gt;&#13;
+&lt;li&gt;&lt;b&gt;&amp;#0036;&amp;#0123person.name&amp;#0125;&lt;/b&gt; is replaced with &lt;b&gt;Chuck Tomasi&lt;/b&gt;&lt;/li&gt;&#13;
+&lt;pre&gt;&#13;
+{&#13;
+	'event' : {&#13;
+		'text' : 'Something happened on this date.',&#13;
+		'date' : {&#13;
+			'text' : '32 BC',&#13;
+			'value' : -32,&#13;
+			'diff' : 2048,&#13;
+			'fullText' : 'October 18, 32 BC'&#13;
+		}&#13;
+	},&#13;
+	'now' : {&#13;
+		'month' : 10,&#13;
+		'day' : 18,&#13;
+		'year' : {&#13;
+			'value' : 2016,&#13;
+			'text' : '2016'&#13;
+		},&#13;
+		'fullText' : 'October 18, 2016'&#13;
+	},&#13;
+	// birthdays and deaths only&#13;
+	'person' : {&#13;
+		'name' : 'Chuck Tomasi',&#13;
+		'title' : 'Platform Architect',&#13;
+		'born' : 1965,  // Same as event.date.text (for birthdays)&#13;
+		'died' : '', // same as event.date.text (for deaths)&#13;
+		'age' : 51 // same as event.date.diff (for birthdays if died != '')&#13;
+	}&#13;
+}&lt;/pre&gt;</message>
+        <sys_class_name>sys_ui_message</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-19 22:17:02</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>ab29048267222200ca735bb557415aa0</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>sn_otd_output_pattern_info</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_ui_message_ab29048267222200ca735bb557415aa0</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2016-10-19 22:34:01</sys_updated_on>
+    </sys_ui_message>
+</record_update>

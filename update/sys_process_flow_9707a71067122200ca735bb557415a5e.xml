@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_process_flow">
+    <sys_process_flow action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <condition table="sn_otd_page">state=New^EQ<item endquery="false" field="state" goto="false" newquery="false" operator="=" or="false" value="New"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </condition>
+        <description/>
+        <label>Pick a date</label>
+        <name>Pick a date</name>
+        <order>100</order>
+        <sys_class_name>sys_process_flow</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-02 17:41:07</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>9707a71067122200ca735bb557415a5e</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Pick a date</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_process_flow_9707a71067122200ca735bb557415a5e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2016-12-10 13:14:02</sys_updated_on>
+        <table>sn_otd_page</table>
+    </sys_process_flow>
+</record_update>

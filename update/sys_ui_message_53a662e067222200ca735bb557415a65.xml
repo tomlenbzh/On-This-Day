@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_message">
+    <sys_ui_message action="INSERT_OR_UPDATE">
+        <application/>
+        <key>sn_otd_events_generated</key>
+        <language>en</language>
+        <message>Event records created. Next actions:&#13;
+&lt;li&gt;Review the records in the related list below.&lt;/li&gt;&#13;
+&lt;li&gt;Set the Output flag to true for the records you wish to keep.&lt;/li&gt;&#13;
+&lt;li&gt; Click Generate Output.&lt;/li&gt;</message>
+        <sys_class_name>sys_ui_message</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-15 17:53:57</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>53a662e067222200ca735bb557415a65</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>sn_otd_events_generated</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_ui_message_53a662e067222200ca735bb557415a65</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-03-14 16:34:51</sys_updated_on>
+    </sys_ui_message>
+</record_update>

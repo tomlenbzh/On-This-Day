@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function ($scope, spUtil) {
+	var c = this;
+	if (!c.options.table)
+		return;
+	// spUtil.recordWatch($scope, c.options.table, c.options.filter);
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.count {
+	margin-top: 0px;
+  	color: #fff;
+}</css>
+        <data_table>sp_instance_table</data_table>
+        <demo_data>{
+  "data": {
+    "table": "incident",
+    "count": 25
+  },
+  "options": {
+		"color": "success",
+		"glyph": "cogs",
+    "title": "Incidents"
+  }
+}</demo_data>
+        <description/>
+        <docs/>
+        <field_list>table,filter,show_panel,title,glyph,color,sp_page</field_list>
+        <has_preview>false</has_preview>
+        <id>otd_count</id>
+        <internal>false</internal>
+        <link/>
+        <name>OTD Count</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+	if (!options.table)
+		return;
+
+	data.otd_page = $sp.getParameter('otd_page');
+	data.fields = options.field_list;
+	var filter = options.filter || 'sys_id!=NULL';
+	data.filter = 'page=' + data.otd_page + '^' + filter;
+	data.total = getRecordCount(options.table, data.filter);
+	data.count = getRecordCount(options.table,
+														 "output=true^" + data.filter);
+
+})()
+
+function getRecordCount(tableName, filter) {
+	
+	var answer = 0;
+	var total = new GlideAggregate(tableName);
+	total.addAggregate('COUNT');
+	total.addEncodedQuery(filter);
+	total.query();
+
+	if (total.next()) {
+		answer = total.getAggregate('COUNT');
+	}
+	
+	return answer;
+
+}
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-01-24 14:33:34</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>74714e0ddb2832002e38711ebf9619a3</sys_id>
+        <sys_mod_count>22</sys_mod_count>
+        <sys_name>OTD Count</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sp_widget_74714e0ddb2832002e38711ebf9619a3</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-01-28 18:27:22</sys_updated_on>
+        <template><![CDATA[<div class="text-center {{::c.options.class_name}} label-{{::c.options.color}}" ng-if="c.options.table">  
+  <a ng-href="?id={{::c.options.sp_page}}&table={{::c.options.table}}&filter={{::c.data.filter}}&otd_page={{::c.data.otd_page}}&fields={{::c.data.fields}}">
+        <span class="fa fa-2x fa-{{::c.options.glyph}} text-white" />
+        <div class="count text-center">{{c.data.count}}/{{c.data.total}}</div>
+  </a>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>sn_otd.Filter</api_name>
+        <client_callable>false</client_callable>
+        <description>Filter utilities for the On This Day App</description>
+        <name>Filter</name>
+        <script><![CDATA[var Filter = Class.create();
+Filter.prototype = {
+	initialize: function(type) {
+		
+		this.filterTable = 'sn_otd_filter';
+		this.typeFilterProperty = gs.getProperty('sn_otd.type_filter', 'events,births');
+		this.filterType = type;
+		this.filterList = this._buildFilterList(this.filterType);
+		
+	},
+	
+	filterMatch : function(text) {
+		
+		for (var i = 0; i < this.filterList.length; i++) {
+			var patt = new RegExp(this.filterList[i], "i");
+			
+			if (text.search(patt) >= 0) {
+				gs.debug('Filter().filterMatch= true text=' + text);
+				return true;
+			}
+		}
+		
+		// gs.debug('Filter().filterMatch= false text=' + txt);
+		return false;
+		
+	},
+	
+	activeType : function() {
+		
+		var typeList = this.typeFilterProperty.split(',');
+		
+		for (var i = 0; i < typeList.length; i++) {
+			if (typeList[i] == this.filterType)
+				return true;
+		}
+		
+		return false;
+	},
+	
+	_buildFilterList : function() {
+		
+		var list = [];
+		var filter = new GlideRecord(this.filterTable);
+		
+		filter.addQuery('active', true);
+		filter.addQuery('applies_to_type', this.filterType);
+		filter.query();
+		
+		while (filter.next()) {
+			list.push(filter.getValue('regex'));
+		}
+		
+		return list;
+	},
+	
+	type: 'Filter'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-02 21:00:08</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>2d5298a067122200ca735bb557415a97</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>Filter</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_script_include_2d5298a067122200ca735bb557415a97</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-03-13 22:05:40</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_metadata_link">
+    <sys_metadata_link action="INSERT_OR_UPDATE">
+        <directory>update</directory>
+        <documentkey>c2354b3067622200ca735bb557415a43</documentkey>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sn_otd_output_patterns">
+    <sn_otd_output_patterns action="INSERT_OR_UPDATE">
+        <conditions/>
+        <first_line>false</first_line>
+        <order>100</order>
+        <pattern>${event.date.diff} years ago today, ${event.text}.</pattern>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-16 14:46:13</sys_created_on>
+        <sys_id>c2354b3067622200ca735bb557415a43</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2016-10-18 21:14:08</sys_updated_on>
+        <table>sn_otd_event</table>
+    </sn_otd_output_patterns>
+</record_update>
+]]></payload>
+        <sys_class_name>sys_metadata_link</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-20 03:03:13</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>d0dac54267222200ca735bb557415a97</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Created 2016-10-16 07:46:13</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_metadata_link_d0dac54267222200ca735bb557415a97</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2016-10-20 03:03:13</sys_updated_on>
+        <tablename>sn_otd_output_patterns</tablename>
+    </sys_metadata_link>
+</record_update>

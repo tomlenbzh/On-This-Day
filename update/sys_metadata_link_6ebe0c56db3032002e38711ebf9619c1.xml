@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_metadata_link">
+    <sys_metadata_link action="INSERT_OR_UPDATE">
+        <directory>update</directory>
+        <documentkey>e28e8456db3032002e38711ebf96195b</documentkey>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="oauth_credential">
+    <oauth_credential action="INSERT_OR_UPDATE">
+        <expires>2017-02-09 14:39:34</expires>
+        <oauth_requestor_profile display_value="Created 2017-02-09 05:39:37">aa8e8456db3032002e38711ebf96195a</oauth_requestor_profile>
+        <peer display_value="Google Calendar">55d3acabdbf622002e38711ebf961958</peer>
+        <scopes/>
+        <session_user/>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-02-09 13:39:37</sys_created_on>
+        <sys_id>e28e8456db3032002e38711ebf96195b</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-02-09 13:39:37</sys_updated_on>
+        <token>ya29.Gl3tA78I5Rd2WmAu3V5cDRiDApAkiB5eKqiI8VhTgJMoznmmfrL2Pb5hkd4w_PibQgq9hm-9gDENVFTQTqTWQcjOvVwh10onPE9aq-X_j9uJNAXQ1AcT2yV17B2zAOE</token>
+        <type>access_token</type>
+        <user display_value="System Administrator">6816f79cc0a8016401c5a33be04be441</user>
+    </oauth_credential>
+</record_update>
+]]></payload>
+        <sys_class_name>sys_metadata_link</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-02-09 13:40:27</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>6ebe0c56db3032002e38711ebf9619c1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Created 2017-02-09 05:39:37</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_metadata_link_6ebe0c56db3032002e38711ebf9619c1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-02-09 13:40:27</sys_updated_on>
+        <tablename>oauth_credential</tablename>
+    </sys_metadata_link>
+</record_update>

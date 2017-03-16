@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_rest_message">
+    <sys_rest_message action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <authentication_type>oauth2</authentication_type>
+        <basic_auth_password/>
+        <basic_auth_profile/>
+        <basic_auth_user/>
+        <description/>
+        <name>Google Calendar</name>
+        <oauth2_profile display_value="Google Calendar default_profile">1914acabdbf622002e38711ebf96195b</oauth2_profile>
+        <protocol_name/>
+        <rest_endpoint>https://www.googleapis.com/calendar/v3/calendars/lklt68p3iht2d5j15fjm2t3rqo%40group.calendar.google.com/events</rest_endpoint>
+        <sys_class_name>sys_rest_message</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-11-06 02:23:02</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>d284a0ebdbf622002e38711ebf961986</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Google Calendar</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_rest_message_d284a0ebdbf622002e38711ebf961986</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2016-11-06 02:44:48</sys_updated_on>
+        <use_basic_auth>false</use_basic_auth>
+        <use_mutual_auth>false</use_mutual_auth>
+    </sys_rest_message>
+</record_update>

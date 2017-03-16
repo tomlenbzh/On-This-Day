@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>sn_otd.Output</api_name>
+        <client_callable>false</client_callable>
+        <description>Output utilities for On This Day app</description>
+        <name>Output</name>
+        <script><![CDATA[var Output = Class.create();
+Output.prototype = {
+	
+	initialize: function(pageRec) {
+		this.eventTable    = 'sn_otd_event';
+		this.birthdayTable = 'sn_otd_person';
+		this.patternTable  = 'sn_otd_output_patterns';
+		
+		this.pageID        = pageRec.getValue('sys_id');
+		this.monthList     = ['January', 'February', 'March',
+			'April', 'May', 'June',
+			'July', 'August', 'September',
+			'October', 'November', 'December'
+		];
+		this.gdt           = new GlideDateTime(pageRec.getValue('date'));
+		this.Month         = this.gdt.getMonthUTC();
+
+		this.now          = {
+			year : {
+				value : this.gdt.getYearUTC(),
+				text : this.gdt.getYearUTC().toString()
+			},
+			month : this.gdt.getMonthUTC(),
+			day : this.gdt.getDayOfMonthUTC(),
+			monthName : this.monthList[this.Month - 1],
+			fullText : this.monthList[this.Month - 1] + ' ' +
+				this.gdt.getDayOfMonthUTC() + ', ' + this.gdt.getYearUTC()
+		};
+		this.lastRandom    = -1;
+		
+	},
+	
+	/*
+	 * generate the title
+	 *
+	 * @param none
+	 * @return string
+	 *
+	 */
+	_getTitle : function() {
+		
+		var answer = '';
+		var nthDayOfTheYear = this._daysSinceJan1();
+		var daysRemainingInYear = this._daysUntilDec31();
+		
+		answer = 'This is the ' + nthDayOfTheYear +
+			this._numberSuffix(nthDayOfTheYear) +
+			' day of the year in the Gregorian calendar. There are ' +
+			daysRemainingInYear + ' days remaining in ' + this.now.year.value + '.\n';
+		
+		return answer;
+	},
+	
+	/*
+	 * get birthday intro
+	 *
+	 * @param none
+	 * @returns string
+	 *
+	 */
+	_getBirthdayIntro : function() {
+		
+		var s = 'Happy birthday goes out on this date to:';
+		
+		return s;
+	},
+	
+	/*
+	 * generate the list of events in English sentences w/random format
+	 *
+	 * @param none
+	 * @return string
+	 *
+	 */
+	outputEvents : function() {
+		
+		var s = this._getTitle() + '\n';
+		s += this._outputRecords('events', this.eventTable);
+		
+		return s;
+		
+	},
+	
+	/*
+	 * generate the birthdays in English sentences w/random format
+	 *
+	 * @param none
+	 * @return string
+	 *
+	 */
+	outputBirthdays : function() {
+
+		var s = this._getBirthdayIntro() + '\n';
+		s += this._outputRecords('births', this.birthdayTable);
+		
+		return s;
+	},
+		
+	/*
+	 * output a set of records based on type and table
+	 *
+	 * @param type
+	 * @param class/table
+	 * @returns string
+	 *
+	 */
+	_outputRecords : function(type, tableName) {
+		
+		var text = [];
+		var event = new GlideRecord(tableName);
+		var i = 0;
+		this.lastRandom = -1; // Reset the last random number
+		
+		event.addQuery('page', this.pageID);
+		event.addQuery('type', type);
+		event.addQuery('output', true);
+		event.orderBy('year');
+		event.query();
+		
+		while (event.next()) {
+			++i;
+			var pattern = this._getRandomPattern(this._getOutputPatterns(event, i));
+
+			if (pattern) {
+				gs.debug('_outputRecords(): pattern=' + pattern);
+				var eventObj = this._createEventObject(event);
+				gs.debug('_outputRecords(): eventObj=' + global.JSON.stringify(eventObj));
+				var newString = this._replaceMetaString(pattern, eventObj);
+
+				text.push(newString);
+			}
+		}
+		
+		return text.join('\n');
+	},
+	
+	/*
+	 * Create an object with event/date/person details.
+	 * This is the information used to replace the meta strings with data
+	 *
+	 * @param GlideRecord(event | person)
+	 * @return Object
+	 *
+	 */
+	_createEventObject : function(evt) {
+		
+		var answer = {
+			'event' : {},
+			'now' : {}
+			};
+		
+		var eventYear = parseInt(evt.year, 10);
+		answer.event.text = evt.getValue('text');
+		answer.event.date = {};
+		answer.event.date.text = this._createYearText(evt.year);
+		answer.event.date.value = eventYear;
+		answer.event.date.diff = this.now.year.value - eventYear;
+		answer.event.date.fullText = this.now.monthName + ' ' + this.now.day +
+								', ' + eventYear;
+		
+		answer.now = this.now;
+		
+		if (evt.type == 'births' || evt.type == 'deaths') {
+			answer.person = {};
+			answer.person.name = evt.getValue('name');
+			answer.person.title = evt.getValue('title');
+			
+			if (evt.type == 'births') {
+				answer.person.born = evt.getValue('year');
+				answer.person.died  = evt.getValue('died');
+				if (answer.person.died) {
+					answer.person.age = answer.person.died - answer.person.born;
+				} else {
+					answer.person.age = answer.now.year.value - answer.person.born;
+				}
+			}
+			
+			if (evt.type == 'Death') {
+				answer.person.born = evt.getValue('born');
+				answer.person.died = evt.getValue('year');
+				answer.person.age = answer.person.died - answer.person.born;
+			}
+		}
+		
+		return answer;
+	},
+	
+	/*
+	 * get a list of output patterns that can be used for this record/posiion
+	 *
+	 * @param GlideRecord(event | person)
+	 * @param integer - line number (used to determine first line)
+	 * @returns Array of Objects (sys_id/pattern string)
+	 *
+	 */
+	_getOutputPatterns : function(evt, count) {
+		var answer = [];
+		var bool = false;
+		var patt = new GlideRecord('sn_otd_output_patterns');
+		
+		gs.debug('_getOutputPatterns(): event=' + evt.getValue('year') + ' ' +
+				 evt.getValue('text')
+ 				 + ' title=' + evt.getValue('title') +
+ 				 ' name=' + evt.getValue('name') + ' b.' + evt.getValue('born') +
+ 				 ' d.' + evt.getValue('died')
+				);
+		patt.addQuery('table', evt.sys_class_name);
+		if (count == 1)
+			patt.addQuery('first_line', true);
+		patt.query();
+		gs.debug('_getOutputPatterns(): ' + patt.getRowCount() + ' patterns found');
+
+		while (patt.next()) {
+			var answerObj = {};
+			bool = GlideFilter.checkRecord(evt, patt.conditions);
+			gs.debug('_getOutputPatterns(): checking: ' + patt.getValue('conditions'));
+			if (bool) {
+				gs.debug('_getOutputPatterns(): match=' + patt.getValue('pattern'));
+				answerObj.id = patt.getValue('sys_id');
+				answerObj.pattern = patt.getValue('pattern');
+				answer.push(answerObj);
+			}
+		}
+		
+		if (answer.length == 0) {
+			gs.warn('WARNING: No matching patterns found');
+		}
+	
+		return answer;
+	},
+	
+	/*
+	 * replace the meta strings with object values
+	 *
+	 * @param string with 0 or more ${string} values to replace
+	 * @param object with data to use
+	 * @returns string
+	 *
+	 */
+	_replaceMetaString : function(metaString, obj) {
+	
+		var self = this;
+		var newString = metaString.replace(/\${([a-z0-9\.]+)}/gi, function(match, p1) {
+			return self._getValue(obj, p1);
+		});
+		
+		return newString;
+	},
+
+	/*
+	 * get the object value from a dot notation string
+	 *
+	 * @param obj - object to search
+	 * @param str - index of property or sub/object to get
+	 *
+	 * @return object property (or failure string)
+	 *
+	 */
+	_getValue : function(obj, str) {
+ 
+		var currentObj = obj;
+		
+		try {
+			 currentObj = obj;
+			 str.split('.').forEach(function(k) {
+				 // gs.debug(k);
+				 currentObj = currentObj[k];
+			 });
+		} catch (e) {
+			 return '***INVALID KEY: ' + str;
+		}
+ 
+		if (!currentObj)
+			 return '***UNDEFINED***';
+ 
+		if (typeof currentObj == 'object')
+			 return '***OBJECT***';
+ 
+		return currentObj;
+		
+	},
+	
+	/*
+	 * create text from the year (convert negative to BC)
+	 * 
+	 * @param integer
+	 * @returns string
+	 *
+	 */
+	_createYearText : function(year) {
+		
+		var yearText = year.toString();
+		
+		if (year < 0) {
+			yearText = Math.abs(year) + ' BC';
+		}
+
+		return yearText;
+	},
+	
+	/*
+	 * Count the days since Jan 1 of this year
+	 *
+	 * @param none
+	 * @return string
+	 *
+	 */
+	_daysSinceJan1 : function() {
+		
+		var jan1Str = this.now.year.value-1 + '-12-31 00:00:00';
+		var jan1gdt = new GlideDateTime(jan1Str);
+		
+		var dur = new GlideDuration();
+		
+		dur = GlideDateTime.subtract(jan1gdt, this.gdt);
+		gs.debug('dur=' + dur.getDisplayValue());
+		
+		durStr = dur.getDisplayValue();
+		var days = parseInt(durStr.split(' ')[0], 10);
+		
+		return days;
+	},
+	
+	/*
+	 * Count the days remaining in this year
+	 *
+	 * @param none
+	 * @return string
+	 *
+	 */
+	_daysUntilDec31 : function(gdt) {
+		
+		var dec31Str = this.now.year.value + '-12-31 00:00:00';
+		var dec31gdt = new GlideDateTime(dec31Str);
+		
+		var dur = new GlideDuration();
+		
+		dur = GlideDateTime.subtract(this.gdt, dec31gdt);
+		//		gs.debug('dur=' + dur.getDisplayValue());
+		
+		durStr = dur.getDisplayValue();
+		var days = parseInt(durStr.split(' ')[0], 10);
+		
+		return days;
+	},
+	
+	/*
+	 * Create a suffix for the day of the year (e.g. 2nd, 5th, 21st)
+	 *
+	 * @param none
+	 * @return string
+	 *
+	 */
+	_numberSuffix : function(n) {
+		
+		var suffix = 'th';
+		
+		if (n < 4 || n > 20) {
+			
+			if (n % 10 == 1)
+				suffix = 'st';
+			
+			if (n % 10 == 2)
+				suffix = 'nd';
+			
+			if (n % 10 == 3)
+				suffix = 'rd';
+			
+		}
+		
+		return suffix;
+	},
+	
+	/*
+	 * generate a random pattern element from the list
+	 * keep track of the last list id to prevent repeats
+	 *
+	 * @param array of id/pattern objects
+	 * @return string
+	 *
+	 */
+	_getRandomPattern : function(list) {
+	
+		if (list.length == 0)
+			return;
+		
+		var r = 0;
+		var id = -1;
+		var limit = list.length;
+ 		gs.debug('_getRandomPattern(): limit=' + limit + ' last=' + this.lastRandom);
+		gs.debug('_getRandomPattern(): list=' + global.JSON.stringify(list));
+		
+		// If there is only one choice, avoid getting stuck in the loop
+		if (limit == 1) {
+			this.lastRandom = list[r].id;
+			
+			return list[0].pattern;
+		}
+			
+ 		do {
+			r = Math.floor((Math.random() * limit));
+ 			// gs.debug('_getRandomPattern(): r=' + r);
+			id = list[r].id;
+ 		} while (id == this.lastRandom);
+
+		this.lastRandom = id;
+
+		return list[r].pattern;
+	},
+	
+	type: 'Output'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-03 17:38:43</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>3e4f6c3067122200ca735bb557415a02</sys_id>
+        <sys_mod_count>124</sys_mod_count>
+        <sys_name>Output</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_script_include_3e4f6c3067122200ca735bb557415a02</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-03-14 16:03:31</sys_updated_on>
+    </sys_script_include>
+</record_update>

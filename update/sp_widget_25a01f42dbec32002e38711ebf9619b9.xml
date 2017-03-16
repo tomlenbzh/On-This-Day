@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($http, $scope, spUtil) {
+	/* widget controller */
+	var c = this;
+
+	$rootScope.$broadcast('showSpinner', false);
+
+	c.uiAction = function(action) {
+
+		console.log('action=' + action);
+		if (action == 'refresh') {
+			$scope.getRecord($scope.data.pageID);
+		}
+
+		if (action == 'save') {
+			$scope.writeRecord($scope.data.pageID,
+												 {output : $scope.data.output});
+		}
+
+		if (action == 'publish') {
+			$scope.publishRecord($scope.data.pageID);
+		}
+
+	}
+
+	$scope.writeRecord = function(sys_id, obj) {
+		$rootScope.$broadcast('showSpinner', true);
+		console.log('writeRecord(): output=' + obj.output);
+		$http({
+			method : "PUT",
+			url : "/api/now/table/sn_otd_page/" + sys_id,
+			headers : {"Content-type" : "application/json"},
+			data : obj
+		}).then(function(response) {
+			spUtil.addInfoMessage($scope.data.message.saved);
+			$rootScope.$broadcast('showSpinner', false);
+		});
+
+	}
+
+	$scope.getRecord = function(sys_id) {
+		$rootScope.$broadcast('showSpinner', true);
+		$http.get('/api/sn_otd/refresh_page_output/' + sys_id).then(function (response) {
+			if (response.data.result) {
+				if (response.data.result.status == 'ok') {
+					$scope.data.output = response.data.result.text;
+				} else {
+					spUtil.addErrorMessage($scope.data.message.error_read);
+				}
+			} else {
+				spUtil.addErrorMessage($scope.data.message.error_read);
+			}
+			$rootScope.$broadcast('showSpinner', false);
+		});
+	}
+
+	$scope.publishRecord = function(sys_id) {
+		$rootScope.$broadcast('showSpinner', true);
+		$http.get('/api/sn_otd/publish_page/' + sys_id).then(function (response) {
+			if (response.data.result) {
+				if (response.data.result.status == 200) {
+					console.log('publishRecord(): ' + $scope.data.message.published);
+					spUtil.addInfoMessage($scope.data.message.published);
+				} else {
+					console.log('Error publishing: response=' + JSON.stringify(response));
+					spUtil.addErrorMessage($scope.data.message.error_publish);
+				}
+			}  else {
+				console.log('Error publishing: no response');
+				spUtil.addErrorMessage($scope.data.message.error_publish);
+			}
+			$rootScope.$broadcast('showSpinner', false);
+		});
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.glyphicon {
+  font-size : 20pt;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>otd_output</id>
+        <internal>false</internal>
+        <link/>
+        <name>OTD output</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	/* populate the 'data' object */
+	/* e.g., data.table = $sp.getValue('table'); */
+
+	data.pageID = $sp.getParameter('otd_page');
+
+	var gr = new GlideRecord('sn_otd_page');
+	if (!gr.get(data.pageID)) {
+		gs.addErrorMessage('Error reading record: ' + data.pageID);
+		return;
+	}
+
+	data.output = gr.getValue('output');
+	data.message = {
+		"saved" : gs.getMessage('Saved'),
+		"published" : gs.getMessage('Published'),
+		"error_read" : gs.getMessage('Error reading record'),
+		"error_publish" : gs.getMessage('Error publishing record')
+	};
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-01-27 22:53:32</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>25a01f42dbec32002e38711ebf9619b9</sys_id>
+        <sys_mod_count>64</sys_mod_count>
+        <sys_name>OTD output</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sp_widget_25a01f42dbec32002e38711ebf9619b9</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-03-03 23:15:21</sys_updated_on>
+        <template><![CDATA[<div>
+  <div class="form-group">
+    <textarea class="form-control" rows="20" ng-model="data.output" id="output">{{data.output}}</textarea>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <button type="button" class="btn btn-info btn-block col-xs-4" ng-click="c.uiAction('refresh')">
+        <span class="glyphicon glyphicon-repeat"></span>
+      </button>
+    </div>
+    <div class="col-xs-4">
+      <button type="button" class="btn btn-info btn-block" ng-click="c.uiAction('save')">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+      </button>
+    </div>
+    <div class="col-xs-4">
+      <button type="button" class="btn btn-info btn-block col-xs-4" ng-click="c.uiAction('publish')">
+        <span class="glyphicon glyphicon-cloud-upload"></span>
+      </button>
+    </div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

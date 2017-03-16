@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Enter the Google calendar ID where to publish events. Find this information by going to the Calendar Settings page. Example: k12t68p3iht2d5j15fjm2t3rqo@group.calendar.google.com</description>
+        <ignore_cache>false</ignore_cache>
+        <is_private>false</is_private>
+        <name>sn_otd.google_calendar_id</name>
+        <read_roles/>
+        <suffix>google_calendar_id</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-11-11 14:21:10</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>d968f419db0ba2002e38711ebf96191e</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>sn_otd.google_calendar_id</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_properties_d968f419db0ba2002e38711ebf96191e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-03-16 16:38:26</sys_updated_on>
+        <type>string</type>
+        <value/>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=d968f419db0ba2002e38711ebf96191e"/>
+</record_update>

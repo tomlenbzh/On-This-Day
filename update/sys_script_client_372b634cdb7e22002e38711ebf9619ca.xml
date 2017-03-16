@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sys_script_client">
+    <sys_script_client action="INSERT_OR_UPDATE">
+        <active>false</active>
+        <applies_extended>false</applies_extended>
+        <condition/>
+        <description/>
+        <field>date</field>
+        <global>true</global>
+        <messages/>
+        <name>Get Input Text</name>
+        <order/>
+        <script><![CDATA[function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+	if (isLoading || newValue === '') {
+		return;
+	}
+	
+	var ga = new GlideAjax('Ajax');
+	ga.addParam('sysparm_name', 'getInputText');
+	ga.addParam('sysparm_date', g_form.getValue('date'));
+	ga.getXML(saveText);
+	
+	function saveText(response) {
+		var answer = response.responseXML.documentElement.getAttribute("answer");
+		// alert('answer=' + answer);
+		g_form.setValue('input', answer);
+	}
+	
+}]]></script>
+        <sys_class_name>sys_script_client</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-26 19:54:59</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>372b634cdb7e22002e38711ebf9619ca</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>Get Input Text</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_script_client_372b634cdb7e22002e38711ebf9619ca</sys_update_name>
+        <sys_updated_by>chuck.tomasi</sys_updated_by>
+        <sys_updated_on>2017-03-13 22:11:21</sys_updated_on>
+        <table>sn_otd_page</table>
+        <type>onChange</type>
+        <ui_type>0</ui_type>
+        <view/>
+    </sys_script_client>
+</record_update>

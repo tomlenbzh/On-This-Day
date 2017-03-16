@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>sn_otd.Ajax</api_name>
+        <client_callable>true</client_callable>
+        <description/>
+        <name>Ajax</name>
+        <script><![CDATA[var Ajax = Class.create();
+Ajax.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	
+	getInputText : function() {
+
+		var p = new Parser({'sys_id' : 'SAMPLE'});		
+	
+		var d = this.getParameter('sysparm_date');
+		var url = p.makeWikipediaURL(d);
+		var text = p.getInputText(url);
+		
+		return text;
+	},
+
+    type: 'Ajax'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2016-10-26 19:49:51</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>c199670cdb7e22002e38711ebf9619f9</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>Ajax</sys_name>
+        <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
+        <sys_update_name>sys_script_include_c199670cdb7e22002e38711ebf9619f9</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-01-27 18:56:46</sys_updated_on>
+    </sys_script_include>
+</record_update>
