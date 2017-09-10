@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <record_update table="sys_ui_style">
     <sys_ui_style action="INSERT_OR_UPDATE">
+        <alt/>
         <element>review</element>
         <name>sn_otd_event</name>
         <style>background-color:LimeGreen;</style>

@@ -17,6 +17,7 @@
         <order>0</order>
         <order_by>year</order_by>
         <order_direction>asc</order_direction>
+        <roles/>
         <short_description/>
         <size>md</size>
         <sp_column display_value="1">96777035db6032002e38711ebf9619da</sp_column>

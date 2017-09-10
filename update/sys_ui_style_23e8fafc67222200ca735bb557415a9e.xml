@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <record_update table="sys_ui_style">
     <sys_ui_style action="INSERT_OR_UPDATE">
+        <alt/>
         <element>first_line</element>
         <name>sn_otd_output_patterns</name>
         <style>background-color:tomato</style>

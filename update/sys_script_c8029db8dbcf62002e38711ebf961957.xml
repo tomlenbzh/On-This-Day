@@ -30,7 +30,11 @@
         <role_conditions/>
         <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
 	
-	new Parser2(current).getAllData();
+	if (gs.getProperty('sn_otd.parser') == 'json') {
+		new Parser2(current).getAllData();
+	} else {
+		new Parser(current).getAllData();
+	}
 	
 })(current, previous);]]></script>
         <sys_class_name>sys_script</sys_class_name>
@@ -40,7 +44,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>c8029db8dbcf62002e38711ebf961957</sys_id>
-        <sys_mod_count>9</sys_mod_count>
+        <sys_mod_count>12</sys_mod_count>
         <sys_name>Auto Parse</sys_name>
         <sys_overrides/>
         <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
@@ -48,8 +52,8 @@
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
         <sys_update_name>sys_script_c8029db8dbcf62002e38711ebf961957</sys_update_name>
-        <sys_updated_by>chuck.tomasi</sys_updated_by>
-        <sys_updated_on>2017-03-14 16:31:18</sys_updated_on>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-09-10 14:19:47</sys_updated_on>
         <template/>
         <when>async</when>
     </sys_script>

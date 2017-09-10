@@ -18,7 +18,9 @@
         <provider_class/>
         <read_access>true</read_access>
         <super_class display_value="Event" name="sn_otd_event">3862a94067122200ca735bb557415a5c</super_class>
+        <sys_class_code/>
         <sys_class_name>sys_db_object</sys_class_name>
+        <sys_class_path/>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2016-10-15 22:53:00</sys_created_on>
         <sys_customer_update>false</sys_customer_update>

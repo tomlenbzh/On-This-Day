@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database>
-    <element label="Event" max_length="40" name="sn_otd_event" type="collection">
+    <element label="Event" max_length="40" name="sn_otd_event" sizeclass="10882" type="collection">
         <element label="Output" max_length="40" name="output" type="boolean"/>
         <element label="Page" max_length="32" name="page" reference="sn_otd_page" reference_cascade_rule="delete" reference_floats="true" type="reference"/>
         <element default="true" label="Review" max_length="40" name="review" type="boolean"/>

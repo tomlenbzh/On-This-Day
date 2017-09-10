@@ -53,7 +53,7 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2016-10-02 14:13:54</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
-        <sys_id>efa5e74013c132001098b5f12244b0b5</sys_id>
+        <sys_id>dcd0ddf1dba40300e5aef4a51f961954</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>sn_otd_page</sys_name>
         <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
@@ -62,7 +62,7 @@
         <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
         <sys_update_name>sys_dictionary_sn_otd_page_NULL</sys_update_name>
         <sys_updated_by>system</sys_updated_by>
-        <sys_updated_on>2017-03-16 16:32:39</sys_updated_on>
+        <sys_updated_on>2017-08-13 15:07:48</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

@@ -16,7 +16,7 @@
         <list_edit_insert_row>false</list_edit_insert_row>
         <list_edit_ref_qual_tag/>
         <list_edit_type/>
-        <mode/>
+        <mode>grid</mode>
         <name>sn_otd_page</name>
         <new_condition/>
         <new_roles/>
@@ -28,7 +28,7 @@
         <omit_links>false</omit_links>
         <omit_new_button>true</omit_new_button>
         <related_list>sn_otd_event.page</related_list>
-        <search_method/>
+        <search_method>keywords</search_method>
         <sys_class_name>sys_ui_list_control</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2016-10-02 21:32:06</sys_created_on>
