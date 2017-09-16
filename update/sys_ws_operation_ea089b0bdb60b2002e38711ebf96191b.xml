@@ -12,23 +12,26 @@
 
 	var pathParams = request.pathParams; 
 	var date = pathParams.date;
-	var body = {};
-	
+
 	var page = new GlideRecord('sn_otd_page');
 	page.newRecord();
 	page.date = date;
 	page.state = 'Review';
-	body.sys_id = page.insert();
+	var id = page.insert();
 
-	var p = new Parser2(page).getAllData();
-
+	if (gs.getProperty('sn_otd.parser') == 'json') {
+		new Parser2(page).getAllData();
+	} else {
+		new Parser(page).getAllData();
+	}
+	var body = {'sys_id' : id};
 	response.setBody(body);
+
 	if (body.sys_id.length == 32)
 		response.setStatus(201);
 	else
 		response.setStatus(500);
-	
-	gs.info('response=' + JSON.stringify(response));
+
 	response.setContentType('application/json');
 
 })(request, response);]]></operation_script>
@@ -45,15 +48,15 @@
         <sys_created_on>2017-01-31 02:08:58</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>ea089b0bdb60b2002e38711ebf96191b</sys_id>
-        <sys_mod_count>8</sys_mod_count>
+        <sys_mod_count>16</sys_mod_count>
         <sys_name>POST</sys_name>
         <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
         <sys_update_name>sys_ws_operation_ea089b0bdb60b2002e38711ebf96191b</sys_update_name>
-        <sys_updated_by>chuck.tomasi</sys_updated_by>
-        <sys_updated_on>2017-03-14 16:57:11</sys_updated_on>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-09-16 02:25:59</sys_updated_on>
         <web_service_definition display_value="New Page">17e7d70bdb60b2002e38711ebf961918</web_service_definition>
         <web_service_version/>
     </sys_ws_operation>
