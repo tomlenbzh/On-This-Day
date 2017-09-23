@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="RegEx" max_length="40" name="sn_otd_regex" type="collection">
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element attributes="edge_encryption_enabled=true" label="Description" max_length="100" name="description" type="string"/>
+        <element label="Pattern" max_length="100" name="pattern" type="string"/>
+        <element label="Replace" max_length="100" name="replace" type="string"/>
+    </element>
+</database>
