@@ -31,6 +31,8 @@
         <element>date</element>
         <element_reference>false</element_reference>
         <foreign_database/>
+        <function_definition/>
+        <function_field>false</function_field>
         <internal_type display_value="">glide_date</internal_type>
         <mandatory>true</mandatory>
         <max_length>40</max_length>
