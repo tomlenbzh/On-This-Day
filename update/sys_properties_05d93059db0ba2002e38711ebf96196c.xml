@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_properties">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
     <sys_properties action="INSERT_OR_UPDATE">
         <choices/>
         <description>Enter the sys_id of the OAuth profile used to authenticate with Google Calendar. (Table=oauth_entity_profile). If you have not previously set this up, go to System OAuth&gt; Application Registry and register your app with an OAuth Profile.</description>

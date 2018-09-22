@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Output patterns" max_length="40" name="sn_otd_output_patterns" type="collection">
         <element attributes="readable=true,no_truncate=true" dependent="table" dependent_on_field="table" label="Conditions" max_length="4000" name="conditions" type="conditions" use_dependent_field="true"/>
         <element label="First line" max_length="40" name="first_line" type="boolean"/>

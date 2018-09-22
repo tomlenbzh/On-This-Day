@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_script_include">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
     <sys_script_include action="INSERT_OR_UPDATE">
         <access>package_private</access>
         <active>true</active>
@@ -8,17 +7,20 @@
         <description/>
         <name>Parser</name>
         <script><![CDATA[var Parser = Class.create();
+
+EVENT_TABLE  = 'sn_otd_event';
+PERSON_TABLE = 'sn_otd_person';
+REGEX_TABLE  = 'sn_otd_regex';
+
 Parser.prototype = {
+
 	initialize: function(pageRec) {
-		this.eventTable    = 'sn_otd_event';
-		this.personTable   = 'sn_otd_person';
-		this.regExTable    = 'sn_otd_regex';
 		this.pageID        = pageRec.sys_id;
 		this.pageDate      = pageRec.date;
 		this.baseEndpoint  = 'https://en.wikipedia.org/wiki/';
 		this.lineCleaner   = this.getRegEx();
 	},
-	
+
 	/*
  	 * Get the RegEx rules for line-by-line clean up
  	 *
@@ -28,55 +30,55 @@ Parser.prototype = {
  	 *
  	 */
 	getRegEx : function() {
-		
+
 		var clean = [];
-		
-		var regex = new GlideRecord(this.regExTable);
+
+		var regex = new GlideRecord(REGEX_TABLE);
 		regex.orderBy('order');
 		regex.addQuery('active', true);
 		regex.query();
-		
+
 		while (regex.next()) {
 			var cleanObj = {};
-			var patt = regex.getValue('pattern');
 			var repl = regex.getValue('replace');
 			if (!repl)
 				repl = '';
-			
-			cleanObj.pattern = patt;
+
 			cleanObj.replace = repl;
+			cleanObj.pattern = regex.getValue('pattern');
+			cleanObj.order   = regex.getValue('order');
+			cleanObj.desc    = regex.getValue('description');
 			clean.push(cleanObj);
 		}
-			
+
 		return clean;
 	},
 
-	
 	makeWikipediaURL : function(dateStr) {
-		
-		// gs.info('>>>DEBUG: getWikipediaURL() start');
+
+		// gs.debug('>>>DEBUG: getWikipediaURL() start');
 		var monthList     = ['January', 'February', 'March',
-							'April', 'May', 'June',
-							'July', 'August', 'September',
-							'October', 'November', 'December'
-		];
-		
+							 'April', 'May', 'June',
+							 'July', 'August', 'September',
+							 'October', 'November', 'December'
+							];
+
 		var d = dateStr + ' 00:00:00';
-		gs.info('>>>DEBUG: d=' + d);
+		gs.debug('>>>DEBUG: d=' + d);
 		var today = new GlideDateTime(d);
 		var thisMonth = today.getMonthUTC();
 		var thisDay = today.getDayOfMonthUTC();
-		gs.info('>>>DEBUG: thisMonth=' + thisMonth + ' thisDay=' + thisDay);
-		
+		gs.debug('>>>DEBUG: thisMonth=' + thisMonth + ' thisDay=' + thisDay);
+
 		var url = this.baseEndpoint + monthList[thisMonth - 1] + '_' + thisDay;
-		
-		gs.info('url=' + url);
+
+		gs.debug('url=' + url);
 		return url;
 	},
-	
+
 	getInputText : function(url) {
-		
-		gs.info('getInputText(): ' + url);
+
+		gs.debug('getInputText(): ' + url);
 		var rm = new sn_ws.RESTMessageV2();
 		rm.setEndpoint(url);
 		rm.setHttpMethod('get');
@@ -84,12 +86,12 @@ Parser.prototype = {
 		var response = rm.execute();
 		var rawText = response.getBody();
 		var noHTML = rawText.replace(/<[^>]*>/g, '');
-		
+
 		var lines = noHTML.split('\n');
 		var save = false;
 		var saveList = [];
-		gs.info('getInputText(): lines=' + lines.length);
-		
+		// gs.debug('getInputText(): lines=' + lines.length);
+
 		for (var i = 0; i < lines.length; i++) {
 			var line = lines[i];
 			if (line.indexOf('Events[edit]') >= 0)
@@ -99,81 +101,81 @@ Parser.prototype = {
 			if (save)
 				saveList.push(line);
 		}
-		
+
 		return saveList.join('\n');
 	},
-	
+
 	parseInputText : function(inputText) {
-		
+
 		var list = inputText.split('\n');
 		// var regPat = /^(\d+)\s.\s(.*)$/;
 		var regPat = /(\d+)(\sBC)?\s.\s?(.*)/;
 		var type = 'Event'; // Default Event type unless otherwise specified
-		var sys_class_name = this.eventTable;
-		
+		var sys_class_name = EVENT_TABLE;
+
 		for (var i = 0; i < list.length; i++) {
-			
+
 			var line = this._cleanRawString(list[i]);
 			var event = {};
-				
-				// gs.debug('parseInputText(): line=/' + line + '/');
-				
-				if (line == 'Events[edit]') {
-					// gs.debug('>>>EVENT FLAG!!!');
-					type = 'events';
-					sys_class_name = this.eventTable;
-					continue;
-				}
-				if (line == 'Births[edit]') {
-					// gs.debug('>>>BIRTHDAY FLAG!!!');
-					type = 'births';
-					sys_class_name = this.personTable;
-					continue;
-				}
-				if (line == 'Deaths[edit]') {
-					// gs.debug('>>>DEATH FLAG!!!');
-					type = 'deaths';
-					sys_class_name = this.personTable;
-					continue;
-				}
-				
-				if (line == '')
-					continue;
-				
-				var part = line.match(regPat);
-				// var event = new GlideRecord(this.eventTable);
-				// If it's a birthday or death, populate the date from the text
-				// (b. \d+) or (d. \d+) and save that part to the 'date' field
-				// event.newRecord();
-				event.year = part[1];
-				if (part[2] && part[2].trim() == 'BC')
-					event.year *= -1;
-				
-				event.type = type;
-				event.sys_class_name = sys_class_name;
-				event.text = part[3].trim();
-				event.page = this.pageID;
-				var filter = new Filter(event.type);
-				
-				event.review = filter.activeType();
-				if (event.review) {
-					event.review = !filter.filterMatch(event.text);
-				}
-				// gs.info('parseInputText(): type=' + event.type + ' sys_class_name=' +
-				//	   event.sys_class_name + ' text=' + event.text);
-				this._createRecord(event);
-				
+
+			// gs.debug('parseInputText(): line=/' + line + '/');
+
+			if (line == 'Events[edit]') {
+				// gs.debug('>>>EVENT FLAG!!!');
+				type = 'events';
+				sys_class_name = EVENT_TABLE;
+				continue;
 			}
-		},
-		
-		getAllData : function() {
-			var url = this.makeWikipediaURL(this.pageDate.getDisplayValue());
-			var input = this.getInputText(url);
-			this.parseInputText(input);
-		},
-		
-		_cleanRawString : function(text) {
-			/*
+			if (line == 'Births[edit]') {
+				// gs.debug('>>>BIRTHDAY FLAG!!!');
+				type = 'births';
+				sys_class_name = PERSON_TABLE;
+				continue;
+			}
+			if (line == 'Deaths[edit]') {
+				// gs.debug('>>>DEATH FLAG!!!');
+				type = 'deaths';
+				sys_class_name = PERSON_TABLE;
+				continue;
+			}
+
+			if (line == '')
+				continue;
+
+			var part = line.match(regPat);
+			// var event = new GlideRecord(this.eventTable);
+			// If it's a birthday or death, populate the date from the text
+			// (b. \d+) or (d. \d+) and save that part to the 'date' field
+			// event.newRecord();
+			event.year = part[1];
+			if (part[2] && part[2].trim() == 'BC')
+				event.year *= -1;
+
+			event.type = type;
+			event.sys_class_name = sys_class_name;
+			event.text = part[3].trim();
+			event.page = this.pageID;
+			var filter = new Filter(event.type);
+
+			event.review = filter.activeType();
+			if (event.review) {
+				event.review = !filter.filterMatch(event.text);
+			}
+			// gs.debug('parseInputText(): type=' + event.type + ' sys_class_name=' +
+			//	   event.sys_class_name + ' text=' + event.text);
+			this._createRecord(event);
+
+		}
+	},
+
+	getAllData : function() {
+		var url = this.makeWikipediaURL(this.pageDate.getDisplayValue());
+		var input = this.getInputText(url);
+		this.parseInputText(input);
+	},
+
+	_cleanRawString : function(text) {
+		/*
  			* old way
  			*
 			text = text.replace(/–/g, "-"); // replaced mdash with hyphen
@@ -182,157 +184,159 @@ Parser.prototype = {
 			text = text.replace(/&#160;/g, " "); // Remove pesky &#160; chars
 			text = text.replace(/&amp;/g, "&"); // Remove pesky &#160; chars
  			*/
-			
-			// New way - data driven from the RegEx table
-			for (var i = 0; i < this.lineCleaner.length; i++) {
-				var patt = new RegExp(this.lineCleaner[i].pattern, "g");
-				text = text.replace(patt, this.lineCleaner[i].replace);
-			}
-			
-			// Check for missing space around dash
-			var regPat1 = /(\d+)(\sBC)?\s-(.*)/;
-			
-			if (text.match(regPat1)) {
-				text = text.replace(regPat1, "$1$2 - $3");
-			}
-			
-			var regPat2 = /(\d+)(\sBC)?-(.*)/;
-			
-			if (text.match(regPat2)) {
-				text = text.replace(regPat2, "$1$2 -$3");
-			}
-			
-			return text.trim();
-		},
-		
-		_createRecord : function(evt) {
-			
-			if (evt.type == 'births') {
-				var dod = this._setBornOrDiedYear(evt.text);
-				evt.died = dod.year;
-				evt.born = evt.year;
-				evt.text = dod.text;
-				var person = this._getPerson(dod.text);
-				evt.name = person.name.trim();
-				evt.title = person.title.trim();
-				gs.debug('_createRecord(): dod=' + global.JSON.stringify(dod) +
-				' person=' + global.JSON.stringify(person));
-			}
-			
-			if (evt.type == 'deaths') {
-				var dob = this._setBornOrDiedYear(evt.text);
-				evt.born = dob.year;
-				evt.died = evt.year;
-				evt.text = dob.text;
-				var corpse = this._getPerson(dob.text);
-				evt.name = corpse.name.trim();
-				evt.title = corpse.title.trim();
-				gs.debug('_createRecord(): dob=' + global.JSON.stringify(dob) +
-				' corpse=' + global.JSON.stringify(corpse));
-				
-			}
-			
-			var rec = new GlideRecord(evt.sys_class_name);
-			rec.newRecord();
-			
-			for (var field in evt) {
-				if (field == 'sys_class_name')
-					continue;
-				rec.setValue(field, evt[field]);
-			}
-			gs.info('evt = ' + JSON.stringify(evt, null, 4));
-			rec.insert();
-			
-		},
-		
-		_setBornOrDiedYear : function(text) {
-			
-			var answer = {};
-				
-				// If there is a birth/death year, save it and update the text
-				var yearReg = /(.*)\s\([bd]\.\s(\d+)\)/;
-				var yearPart = text.match(yearReg);
-				
-				if (yearPart) {
-					// 			 gs.debug('_setBornOrDiedYear(): yearPart[1]=' +
-					// 					 yearPart[1] + ' yearPart[2]=' + yearPart[2]);
-					answer.text = yearPart[1];
-					answer.year = parseInt(yearPart[2], 10);
-					gs.debug('_setBornOrDiedYear(): year=' + answer.year +
-					' text=' + answer.text);
-				} else {
-					answer.text = text;
-					answer.year = '';
-				}
-				
-				return answer;
-				
-			},
-			
-			/*
+
+		// New way - data driven from the RegEx table
+		for (var i = 0; i < this.lineCleaner.length; i++) {
+			var lc = this.lineCleaner[i];
+			var patt = new RegExp(lc.pattern, "g");
+			text = text.replace(patt, lc.replace);
+			gs.debug(lc.order + ' ' + lc.desc + ' = ' + text);
+		}
+
+		// Check for missing space around dash
+		var regPat1 = /(\d+)(\sBC)?\s-(.*)/;
+
+		if (text.match(regPat1)) {
+			text = text.replace(regPat1, "$1$2 - $3");
+		}
+
+		var regPat2 = /(\d+)(\sBC)?-(.*)/;
+
+		if (text.match(regPat2)) {
+			text = text.replace(regPat2, "$1$2 -$3");
+		}
+
+		return text.trim();
+	},
+
+	_createRecord : function(evt) {
+
+		if (evt.type == 'births') {
+			var dod = this._setBornOrDiedYear(evt.text);
+			evt.died = dod.year;
+			evt.born = evt.year;
+			evt.text = dod.text;
+			var person = this._getPerson(dod.text);
+			evt.name = person.name.trim();
+			evt.title = person.title.trim();
+			gs.debug('_createRecord(): dod=' + global.JSON.stringify(dod) +
+					 ' person=' + global.JSON.stringify(person));
+		}
+
+		if (evt.type == 'deaths') {
+			var dob = this._setBornOrDiedYear(evt.text);
+			evt.born = dob.year;
+			evt.died = evt.year;
+			evt.text = dob.text;
+			var corpse = this._getPerson(dob.text);
+			evt.name = corpse.name.trim();
+			evt.title = corpse.title.trim();
+			gs.debug('_createRecord(): dob=' + global.JSON.stringify(dob) +
+					 ' corpse=' + global.JSON.stringify(corpse));
+
+		}
+
+		var rec = new GlideRecord(evt.sys_class_name);
+		rec.newRecord();
+
+		for (var field in evt) {
+			if (field == 'sys_class_name')
+				continue;
+			rec.setValue(field, evt[field]);
+		}
+		gs.debug('evt = ' + JSON.stringify(evt, null, 4));
+		rec.insert();
+
+	},
+
+	_setBornOrDiedYear : function(text) {
+
+		var answer = {};
+
+		// If there is a birth/death year, save it and update the text
+		var yearReg = /(.*)\s\([bd]\.\s(\d+)\)/;
+		var yearPart = text.match(yearReg);
+
+		if (yearPart) {
+			// 			 gs.debug('_setBornOrDiedYear(): yearPart[1]=' +
+			// 					 yearPart[1] + ' yearPart[2]=' + yearPart[2]);
+			answer.text = yearPart[1];
+			answer.year = parseInt(yearPart[2], 10);
+			gs.debug('_setBornOrDiedYear(): year=' + answer.year +
+					 ' text=' + answer.text);
+		} else {
+			answer.text = text;
+			answer.year = '';
+		}
+
+		return answer;
+
+	},
+
+	/*
  			* parse the name, title string in to two fields
  			*
  			* @param string
  			* @returns object with name & title properties
  			*
  			*/
-			
-			_getPerson : function(string) {
-								
-				var nameTitlePatt = /(.+?), ?(.*)/;
-				if (string.indexOf('Jr.,') >= 0) {
-					nameTitlePatt = /(.+?), (?!Jr.)(.*)/;
-					gs.debug('_getPerson(): JR');
-				}
-				if (string.indexOf('Sr.,') >= 0) {
-					nameTitlePatt = /(.+?), (?!Sr.)(.*)/;
-					gs.debug('_getPerson(): SR');
-				}
-				var nameTitle = string.match(nameTitlePatt);
-				var answer = {
-					'name' : '',
-					'title' : ''
-				};
-				
-				gs.debug('_getPerson(): string=' + string);
-				if (!nameTitle) {
-					gs.debug('_getPerson(): nameTitle undefined');
-					answer.name = string;
-					
-				} else {
-					gs.debug('_getPerson(): nameTitle defined length=' + nameTitle.length);
-					if (nameTitle.length == 2) {
-						answer.name = string;
-						answer.title = '';
-					}
-					
-					if (nameTitle.length == 3) {
-						answer.name = nameTitle[1];
-						answer.title = nameTitle[2];
-					}
-				}
-				
-				gs.debug('_getPerson(): answer=' + JSON.stringify(answer, null, 4));
-				
-				return answer;
-				
-			},
-			
-			deleteRelatedEvents : function() {
-				
-				var event = new GlideRecord(this.eventTable);
-				event.addQuery('page', this.pageID);
-				event.deleteMultiple();
-			},
-			
-			type: 'Parser'
-		};]]></script>
+
+	_getPerson : function(string) {
+
+		var nameTitlePatt = /(.+?), ?(.*)/;
+		if (string.indexOf('Jr.,') >= 0) {
+			nameTitlePatt = /(.+?), (?!Jr.)(.*)/;
+			gs.debug('_getPerson(): JR');
+		}
+		if (string.indexOf('Sr.,') >= 0) {
+			nameTitlePatt = /(.+?), (?!Sr.)(.*)/;
+			gs.debug('_getPerson(): SR');
+		}
+		var nameTitle = string.match(nameTitlePatt);
+		var answer = {
+			'name' : '',
+			'title' : ''
+		};
+
+		gs.debug('_getPerson(): string=' + string);
+		if (!nameTitle) {
+			gs.debug('_getPerson(): nameTitle undefined');
+			answer.name = string;
+
+		} else {
+			gs.debug('_getPerson(): nameTitle defined length=' + nameTitle.length);
+			if (nameTitle.length == 2) {
+				answer.name = string;
+				answer.title = '';
+			}
+
+			if (nameTitle.length == 3) {
+				answer.name = nameTitle[1];
+				answer.title = nameTitle[2];
+			}
+		}
+
+		gs.debug('_getPerson(): answer=' + JSON.stringify(answer, null, 4));
+
+		return answer;
+
+	},
+
+	deleteRelatedEvents : function() {
+
+		var event = new GlideRecord(EVENT_TABLE);
+		event.addQuery('page', this.pageID);
+		event.deleteMultiple();
+	},
+
+	type: 'Parser'
+};]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2016-10-01 13:45:03</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>3c54ad4067122200ca735bb557415a91</sys_id>
-        <sys_mod_count>128</sys_mod_count>
+        <sys_mod_count>133</sys_mod_count>
         <sys_name>Parser</sys_name>
         <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
         <sys_policy>read</sys_policy>
@@ -340,6 +344,6 @@ Parser.prototype = {
         <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
         <sys_update_name>sys_script_include_3c54ad4067122200ca735bb557415a91</sys_update_name>
         <sys_updated_by>chuck.tomasi</sys_updated_by>
-        <sys_updated_on>2018-07-14 18:35:09</sys_updated_on>
+        <sys_updated_on>2018-09-22 13:20:52</sys_updated_on>
     </sys_script_include>
 </record_update>

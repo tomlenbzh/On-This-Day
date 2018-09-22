@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Filter" max_length="40" name="sn_otd_filter" type="collection">
         <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
         <element choice="1" choice_field="type" choice_table="sn_otd_event" label="Applies to type" max_length="40" name="applies_to_type" type="choice">

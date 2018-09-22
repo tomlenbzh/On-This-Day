@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<database>
+<?xml version="1.0" encoding="UTF-8"?><database>
     <element label="Event" max_length="40" name="sn_otd_event" sizeclass="10882" type="collection">
         <element label="Output" max_length="40" name="output" type="boolean"/>
         <element label="Page" max_length="32" name="page" reference="sn_otd_page" reference_cascade_rule="delete" reference_floats="true" type="reference"/>
@@ -8,9 +7,9 @@
         <element attributes="no_truncate=true" label="Text" max_length="1000" name="text" type="string"/>
         <element choice="1" default="Event" label="Type" max_length="40" name="type" type="choice">
             <choice>
-                <element label="Event" sequence="0" value="events"/>
-                <element label="Birthday" sequence="1" value="births"/>
-                <element label="Death" sequence="2" value="deaths"/>
+                <element inactive_on_update="false" label="Event" sequence="0" value="events"/>
+                <element inactive_on_update="false" label="Birthday" sequence="1" value="births"/>
+                <element inactive_on_update="false" label="Death" sequence="2" value="deaths"/>
             </choice>
         </element>
         <element label="Year" max_length="40" name="year" type="integer"/>

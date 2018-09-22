@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_script_include">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
     <sys_script_include action="INSERT_OR_UPDATE">
         <access>package_private</access>
         <active>true</active>
@@ -8,10 +7,12 @@
         <description>Filter utilities for the On This Day App</description>
         <name>Filter</name>
         <script><![CDATA[var Filter = Class.create();
+
+FILTER_TABLE = 'sn_otd_filter';
+
 Filter.prototype = {
 	initialize: function(type) {
 		
-		this.filterTable = 'sn_otd_filter';
 		this.typeFilterProperty = gs.getProperty('sn_otd.type_filter', 'events,births');
 		this.filterType = type;
 		this.filterList = this._buildFilterList(this.filterType);
@@ -49,7 +50,7 @@ Filter.prototype = {
 	_buildFilterList : function() {
 		
 		var list = [];
-		var filter = new GlideRecord(this.filterTable);
+		var filter = new GlideRecord(FILTER_TABLE);
 		
 		filter.addQuery('active', true);
 		filter.addQuery('applies_to_type', this.filterType);
@@ -69,7 +70,7 @@ Filter.prototype = {
         <sys_created_on>2016-10-02 21:00:08</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>2d5298a067122200ca735bb557415a97</sys_id>
-        <sys_mod_count>6</sys_mod_count>
+        <sys_mod_count>7</sys_mod_count>
         <sys_name>Filter</sys_name>
         <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
         <sys_policy>read</sys_policy>
@@ -77,6 +78,6 @@ Filter.prototype = {
         <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
         <sys_update_name>sys_script_include_2d5298a067122200ca735bb557415a97</sys_update_name>
         <sys_updated_by>chuck.tomasi</sys_updated_by>
-        <sys_updated_on>2017-03-13 22:05:40</sys_updated_on>
+        <sys_updated_on>2018-09-22 13:22:20</sys_updated_on>
     </sys_script_include>
 </record_update>

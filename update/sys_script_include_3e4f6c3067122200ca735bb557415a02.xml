@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_script_include">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
     <sys_script_include action="INSERT_OR_UPDATE">
         <access>package_private</access>
         <active>true</active>
@@ -8,12 +7,14 @@
         <description>Output utilities for On This Day app</description>
         <name>Output</name>
         <script><![CDATA[var Output = Class.create();
+
+EVENT_TABLE    = 'sn_otd_event';
+BIRTHDAY_TABLE = 'sn_otd_person';
+PATTERN_TABLE  = 'sn_otd_output_patterns';
+
 Output.prototype = {
-	
+		
 	initialize: function(pageRec) {
-		this.eventTable    = 'sn_otd_event';
-		this.birthdayTable = 'sn_otd_person';
-		this.patternTable  = 'sn_otd_output_patterns';
 		
 		this.pageID        = pageRec.getValue('sys_id');
 		this.monthList     = ['January', 'February', 'March',
@@ -84,7 +85,7 @@ Output.prototype = {
 	outputEvents : function() {
 		
 		var s = this._getTitle() + '\n';
-		s += this._outputRecords('events', this.eventTable);
+		s += this._outputRecords('events', EVENT_TABLE);
 		
 		return s;
 		
@@ -100,7 +101,7 @@ Output.prototype = {
 	outputBirthdays : function() {
 
 		var s = this._getBirthdayIntro() + '\n';
-		s += this._outputRecords('births', this.birthdayTable);
+		s += this._outputRecords('births', BIRTHDAY_TABLE);
 		
 		return s;
 	},
@@ -424,7 +425,7 @@ Output.prototype = {
         <sys_created_on>2016-10-03 17:38:43</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>3e4f6c3067122200ca735bb557415a02</sys_id>
-        <sys_mod_count>124</sys_mod_count>
+        <sys_mod_count>126</sys_mod_count>
         <sys_name>Output</sys_name>
         <sys_package display_value="On This Day" source="sn_otd">bb12e14067122200ca735bb557415af3</sys_package>
         <sys_policy>read</sys_policy>
@@ -432,6 +433,6 @@ Output.prototype = {
         <sys_scope display_value="On This Day">bb12e14067122200ca735bb557415af3</sys_scope>
         <sys_update_name>sys_script_include_3e4f6c3067122200ca735bb557415a02</sys_update_name>
         <sys_updated_by>chuck.tomasi</sys_updated_by>
-        <sys_updated_on>2017-03-14 16:03:31</sys_updated_on>
+        <sys_updated_on>2018-09-22 13:34:36</sys_updated_on>
     </sys_script_include>
 </record_update>

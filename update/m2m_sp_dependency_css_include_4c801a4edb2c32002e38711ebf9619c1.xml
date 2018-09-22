@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="m2m_sp_dependency_css_include">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="m2m_sp_dependency_css_include">
     <m2m_sp_dependency_css_include action="INSERT_OR_UPDATE">
         <order>100</order>
         <sp_css_include display_value="datepicker.css">8c8f0e0edb2c32002e38711ebf9619a9</sp_css_include>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="oauth_entity">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_entity">
     <oauth_entity action="INSERT_OR_UPDATE">
         <access>public</access>
         <access_token_lifespan>1800</access_token_lifespan>
@@ -17,6 +16,7 @@
         <message_signature_lifespan>0</message_signature_lifespan>
         <name>Google Calendar</name>
         <oauth_api_script display_value="OAuthGoogleHandler">91782accdb8362002e38711ebf96193a</oauth_api_script>
+        <protocol_name/>
         <redirect_url>https://democt1.service-now.com/oauth_redirect.do</redirect_url>
         <refresh_token_lifespan>2147483647</refresh_token_lifespan>
         <revoke_token_url/>
@@ -37,6 +37,7 @@
         <sys_updated_on>2017-08-14 17:03:08</sys_updated_on>
         <token_url>https://accounts.google.com/o/oauth2/token</token_url>
         <type>oauth_provider</type>
+        <use_mutual_auth>false</use_mutual_auth>
         <user/>
     </oauth_entity>
 </record_update>

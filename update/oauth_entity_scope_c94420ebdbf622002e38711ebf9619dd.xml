@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="oauth_entity_scope">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_entity_scope">
     <oauth_entity_scope action="INSERT_OR_UPDATE">
         <name>Calendar Management</name>
         <oauth_entity display_value="Google Calendar">55d3acabdbf622002e38711ebf961958</oauth_entity>

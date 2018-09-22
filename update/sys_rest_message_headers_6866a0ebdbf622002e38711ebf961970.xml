@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="sys_rest_message_headers">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_headers">
     <sys_rest_message_headers action="INSERT_OR_UPDATE">
         <name>Accept</name>
         <rest_message display_value="Google Calendar">d284a0ebdbf622002e38711ebf961986</rest_message>

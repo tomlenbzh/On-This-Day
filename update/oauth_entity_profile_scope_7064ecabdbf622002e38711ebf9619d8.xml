@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<record_update table="oauth_entity_profile_scope">
+<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_entity_profile_scope">
     <oauth_entity_profile_scope action="INSERT_OR_UPDATE">
         <oauth_entity_profile display_value="Google Calendar default_profile">1914acabdbf622002e38711ebf96195b</oauth_entity_profile>
         <oauth_entity_scope display_value="Calendar Management">c94420ebdbf622002e38711ebf9619dd</oauth_entity_scope>
